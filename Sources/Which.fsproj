@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<Company>Cedric-Belin.fr</Company>
+		<Copyright>© Cédric Belin</Copyright>
+		<Description>Find the instances of an executable in the system path. Like the `which` Linux command.</Description>
+		<Product>Which for F#</Product>
+		<Version>1.0.0-rc8</Version>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Authors>CedX</Authors>
+		<IncludeSymbols>true</IncludeSymbols>
+		<PackageIcon>Icon.png</PackageIcon>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageReadmeFile>ReadMe.md</PackageReadmeFile>
+		<PackageTags>find;path;system;utility;which</PackageTags>
+		<RepositoryUrl>https://github.com/CedX/Which.fs.git</RepositoryUrl>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AssemblyName>Belin.Which.FSharp</AssemblyName>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<HotReloadAutoRestart>true</HotReloadAutoRestart>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<OutDir>../Binaries</OutDir>
+		<RootNamespace>Belin.Which</RootNamespace>
+		<TargetFramework>net10.0</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="$(RootNamespace).Tests" />
+		<None Include="../Icon.png" Pack="true" PackagePath="" />
+		<None Include="../ReadMe.md" Pack="true" PackagePath="" />
+		<PackageReference Update="FSharp.Core" Version="10.1.401" />
+		<PackageReference Include="Mono.Unix" Version="7.1.0-final.1.21458.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- <Compile Include="Finder.fs" /> -->
+		<!-- <Compile Include="ResultSet.fs" /> -->
+	</ItemGroup>
+</Project>
