@@ -39,7 +39,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<!-- <Compile Include="Finder.fs" /> -->
+		<Compile Include="Finder.fs" />
 		<!-- <Compile Include="ResultSet.fs" /> -->
 	</ItemGroup>
 </Project>
