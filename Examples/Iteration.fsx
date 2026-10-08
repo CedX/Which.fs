@@ -1,0 +1,6 @@
+#r "nuget: Belin.Which.FSharp"
+open Belin.Which
+
+// Finds all instances of an executable and returns them one at a time.
+Console.WriteLine("The 'foobar' command is available at these locations:")
+foreach (var path in Which("foo")) Console.WriteLine($"- {path}")
