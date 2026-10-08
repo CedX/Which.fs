@@ -15,13 +15,15 @@ type Finder() as this =
   /// The regular expression used to remove quotation marks from a path.
   static let quotePattern = Regex @"^""|""$"
 
+  /// The split options used to process the environment variables.
+  static let splitOptions = StringSplitOptions.RemoveEmptyEntries ||| StringSplitOptions.TrimEntries
+
   // Creates a new finder.
   do
     let extensions =
       match Environment.GetEnvironmentVariable "PATHEXT" with
       | null -> defaultExtensions
       | variable ->
-        let splitOptions = StringSplitOptions.RemoveEmptyEntries ||| StringSplitOptions.TrimEntries
         match variable.Split(';', splitOptions) with
         | [||] -> defaultExtensions
         | items -> items |> List.ofArray
@@ -29,9 +31,7 @@ type Finder() as this =
     let paths =
       match Environment.GetEnvironmentVariable "PATH" with
       | null -> []
-      | variable ->
-        let splitOptions = StringSplitOptions.RemoveEmptyEntries ||| StringSplitOptions.TrimEntries
-        variable.Split(Path.PathSeparator, splitOptions) |> List.ofArray
+      | variable -> variable.Split(Path.PathSeparator, splitOptions) |> List.ofArray
 
     this.Extensions <- extensions |> List.map (fun extension -> extension.ToLowerInvariant()) |> List.distinct
     this.Paths <- paths |> List.map (fun path -> quotePattern.Replace(path, "")) |> List.distinct
