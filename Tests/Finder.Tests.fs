@@ -11,40 +11,40 @@ type FinderTests() =
   /// The test fixtures.
   let fixtures = Path.Join(AppContext.BaseDirectory, "../Resources")
 
-  // [<TestMethod>]
-  // member _.Constructor() =
-  //   let splitOptions = StringSplitOptions.RemoveEmptyEntries ||| StringSplitOptions.TrimEntries
+  [<TestMethod>]
+  member _.Constructor() =
+    // let splitOptions = StringSplitOptions.RemoveEmptyEntries ||| StringSplitOptions.TrimEntries
 
-  //   // It should set the `Paths` property to the value of the `PATH` environment variable by default.
-  //   let pathEnv = Environment.GetEnvironmentVariable("PATH") ?? ""
-  //   List<string> paths = pathEnv.Length > 0 ? [.. pathEnv.Split(Path.PathSeparator, splitOptions).Distinct()] : []
-  //   Assert.AreSequenceEqual(paths, new Finder().Paths)
+    // It should set the `Paths` property to the value of the `PATH` environment variable by default.
+    // let pathEnv = Environment.GetEnvironmentVariable("PATH") ?? ""
+    // List<string> paths = pathEnv.Length > 0 ? [.. pathEnv.Split(Path.PathSeparator, splitOptions).Distinct()] : []
+    // Assert.AreSequenceEqual(paths, new Finder().Paths)
 
-  //   // It should set the `Extensions` property to the value of the `PATHEXT` environment variable by default.
-  //   let pathExt = Environment.GetEnvironmentVariable("PATHEXT") ?? ""
-  //   List<string> extensions = pathExt.Length > 0 ? [.. pathExt.Split('', splitOptions).Select(item => item.ToLowerInvariant()).Distinct()] : [".exe", ".cmd", ".bat", ".com"]
-  //   Assert.AreSequenceEqual(extensions, new Finder().Extensions)
+    // It should set the `Extensions` property to the value of the `PATHEXT` environment variable by default.
+    // let pathExt = Environment.GetEnvironmentVariable("PATHEXT") ?? ""
+    // List<string> extensions = pathExt.Length > 0 ? [.. pathExt.Split('', splitOptions).Select(item => item.ToLowerInvariant()).Distinct()] : [".exe", ".cmd", ".bat", ".com"]
+    // Assert.AreSequenceEqual(extensions, new Finder().Extensions)
 
-  //   // It should put in lower case the list of file extensions.
-  //   Assert.AreSequenceEqual([".exe", ".js", ".ps1"], new Finder(extensions: [".EXE", ".JS", ".PS1"]).Extensions)
+    // It should put in lower case the list of file extensions.
+    Finder(Extensions = [".EXE"; ".FSX"; ".PS1"]).Extensions |> shouldBeSequence [".exe"; ".fsx"; ".ps1"]
 
-  // [<TestMethod>]
-  // member _.Find() =
-  //   let finder = new Finder(paths: [fixtures])
+  [<TestMethod>]
+  member _.Find() =
+    let finder = Finder(Paths = [fixtures])
 
-  //   // It should return the path of the `Executable.cmd` file on Windows.
-  //   List<string> executables = [.. finder.Find("Executable")]
-  //   Assert.HasCount(OperatingSystem.IsWindows() ? 1 : 0, executables)
-  //   if (OperatingSystem.IsWindows()) Assert.EndsWith(@"Resources\Executable.cmd", executables.First())
+    // It should return the path of the `Executable.cmd` file on Windows.
+    let mutable executables = finder.Find "Executable" |> List.ofSeq
+    executables |> shouldHaveCount (if OperatingSystem.IsWindows() then 1 else 0)
+    if OperatingSystem.IsWindows() then executables |> Seq.head |> shouldEndWith @"Resources\Executable.cmd"
 
-  //   // It should return the path of the `Executable.sh` file on POSIX.
-  //   executables = [.. finder.Find("Executable.sh")]
-  //   Assert.HasCount(OperatingSystem.IsWindows() ? 0 : 1, executables)
-  //   if (!OperatingSystem.IsWindows()) Assert.EndsWith("Resources/Executable.sh", executables.First())
+    // It should return the path of the `Executable.sh` file on POSIX.
+    executables <- finder.Find "Executable.sh" |> List.ofSeq
+    executables |> shouldHaveCount (if OperatingSystem.IsWindows() then 0 else 1)
+    if not (OperatingSystem.IsWindows()) then executables |> Seq.head |> shouldEndWith @"Resources/Executable.sh"
 
-  //   // It should return an empty array if the searched command is not executable or not found.
-  //   Assert.IsEmpty(finder.Find("NotExecutable.sh"))
-  //   Assert.IsEmpty(finder.Find("foo"))
+    // It should return an empty array if the searched command is not executable or not found.
+    finder.Find "NotExecutable.sh" |> shouldBeEmpty
+    finder.Find "foo" |> shouldBeEmpty
 
   [<TestMethod>]
   member _.IsExecutable() =

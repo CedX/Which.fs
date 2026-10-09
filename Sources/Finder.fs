@@ -41,12 +41,12 @@ type Finder() as this =
   /// The list of executable file extensions.
   member _.Extensions
     with get() = extensions
-    and set(value: string list) = extensions <- value
+    and set(value: string list) = extensions <- value |> List.map (fun extension -> extension.ToLowerInvariant())
 
   /// The list of system paths.
   member _.Paths
     with get() = paths
-    and set(value: string list) = paths <- value
+    and set(value: string list) = paths <- value |> List.map (fun path -> quotePattern.Replace(path, ""))
 
   /// Finds the instances of an executable in the system path.
   /// Returns the paths of executables found.

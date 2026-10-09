@@ -47,19 +47,3 @@ public sealed class FinderTests {
 		Assert.IsEmpty(finder.Find("NotExecutable.sh"));
 		Assert.IsEmpty(finder.Find("foo"));
 	}
-
-	[TestMethod]
-	public void IsExecutable() {
-		var finder = new Finder();
-
-		// It should return `false` if the searched command is not executable or not found.
-		Assert.IsFalse(finder.IsExecutable("foo/bar/baz.qux"));
-		Assert.IsFalse(finder.IsExecutable("Resources/NotExecutable.sh"));
-
-		// It should return `false` for a POSIX executable, when test is run on Windows.
-		Assert.AreEqual(!OperatingSystem.IsWindows(), finder.IsExecutable(Path.Join(fixtures, "Executable.sh")));
-
-		// It should return `false` for a Windows executable, when test is run on POSIX.
-		Assert.AreEqual(OperatingSystem.IsWindows(), finder.IsExecutable(Path.Join(fixtures, "Executable.cmd")));
-	}
-}

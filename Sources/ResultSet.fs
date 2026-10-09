@@ -1,7 +1,6 @@
 namespace Belin.Which
 
 open System.Collections
-open System.Collections.Generic
 
 /// Provides convenient access to the stream of search results.
 type ResultSet(command: string, finder: Finder) =
@@ -12,7 +11,7 @@ type ResultSet(command: string, finder: Finder) =
   /// The first instance of the searched command. Returns `None` if not found.
   member this.First: string option = Seq.tryHead this
 
-  interface IEnumerable<string> with
+  interface string seq with
     /// Returns a new enumerator that allows iterating the results of this set.
     member _.GetEnumerator() = finder.Find(command).GetEnumerator()
 
@@ -22,3 +21,4 @@ type ResultSet(command: string, finder: Finder) =
 
 /// Contains operations for finding executables in the system path.
 module ResultSet = ()
+  // TODO Which function

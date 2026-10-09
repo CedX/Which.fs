@@ -22,9 +22,21 @@ module Assertions =
   let inline shouldBeFalse (condition: bool) =
     Assert.IsFalse condition
 
+  /// Tests whether the specified object is `null`.
+  let inline shouldBeNull (value: objnull) =
+    Assert.IsNull value
+
+  /// Tests whether two sequences contain equal elements in the same order.
+  let inline shouldBeSequence (expected: 'T seq) (actual: 'T seq) =
+    Assert.AreSequenceEqual(expected, actual)
+
   /// Tests whether the specified condition is true.
   let inline shouldBeTrue (condition: bool) =
     Assert.IsTrue condition
+
+  /// Tests whether the specified string ends with the given suffix.
+  let inline shouldEndWith (expectedSuffix: string) (value: string) =
+    Assert.EndsWith(expectedSuffix, value)
 
   /// Tests whether the specified collection has the expected count/length.
   let inline shouldHaveCount (expected: int) (collection: 'T seq) =
@@ -33,3 +45,11 @@ module Assertions =
   /// Tests whether the specified values are unequal.
   let inline shouldNotBe (notExpected: 'T) (actual: 'T) =
     Assert.AreNotEqual<'T>(notExpected, actual)
+
+  /// Tests whether the specified object is not `null`.
+  let inline shouldNotBeNull (value: objnull) =
+    Assert.IsNotNull value
+
+  /// Tests whether the specified string begins with the given prefix.
+  let inline shouldStartWith (expectedPrefix: string) (value: string) =
+    Assert.StartsWith(expectedPrefix, value)
