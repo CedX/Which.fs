@@ -8,6 +8,8 @@ open System.Text.RegularExpressions
 
 /// Finds the instances of an executable in the system path.
 type Finder() as this =
+  let mutable extensions: string list = []
+  let mutable paths: string list = []
 
   /// The list of default executable file extensions.
   static let defaultExtensions = [".exe"; ".cmd"; ".bat"; ".com"]
@@ -20,7 +22,7 @@ type Finder() as this =
 
   // Creates a new finder.
   do
-    let extensions =
+    let extensionList =
       match Environment.GetEnvironmentVariable "PATHEXT" with
       | null -> defaultExtensions
       | variable ->
@@ -28,19 +30,23 @@ type Finder() as this =
         | [||] -> defaultExtensions
         | items -> items |> List.ofArray
 
-    let paths =
+    let pathList =
       match Environment.GetEnvironmentVariable "PATH" with
       | null -> []
       | variable -> variable.Split(Path.PathSeparator, splitOptions) |> List.ofArray
 
-    this.Extensions <- extensions |> List.map (fun extension -> extension.ToLowerInvariant()) |> List.distinct
-    this.Paths <- paths |> List.map (fun path -> quotePattern.Replace(path, "")) |> List.distinct
+    extensions <- extensionList |> List.map (fun extension -> extension.ToLowerInvariant()) |> List.distinct
+    paths <- pathList |> List.map (fun path -> quotePattern.Replace(path, "")) |> List.distinct
 
   /// The list of executable file extensions.
-  member val Extensions: string list = [] with get, set
+  member _.Extensions
+    with get() = extensions
+    and set(value: string list) = extensions <- value
 
   /// The list of system paths.
-  member val Paths: string list = [] with get, set
+  member _.Paths
+    with get() = paths
+    and set(value: string list) = paths <- value
 
   /// Finds the instances of an executable in the system path.
   /// Returns the paths of executables found.
