@@ -1,7 +1,8 @@
-#r "nuget: Belin.Which.FSharp"
+#r "../Binaries/Belin.Which.FSharp.dll"
 open Belin.Which
 
 // Finds the first instance of an executable.
-var path = Which("foobar").First
-if (path is null) Console.Error.WriteLine("The 'foobar' command cannot be found.")
-else Console.WriteLine($"The 'foobar' command is located at: {path}")
+let path = which("foobar").First
+match path with
+| None -> printfn "The 'foobar' command cannot be found."
+| Some value -> printfn $"The 'foobar' command is located at: {value}"

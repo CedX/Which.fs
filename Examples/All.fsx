@@ -1,10 +1,10 @@
-#r "nuget: Belin.Which.FSharp"
+#r "../Binaries/Belin.Which.FSharp.dll"
 open Belin.Which
 
 // Finds all instances of an executable.
-var paths = Which("foobar").All
-if (paths.Length == 0) Console.Error.WriteLine("The 'foobar' command cannot be found.")
-else {
-  Console.WriteLine("The 'foobar' command is available at these locations:")
-  foreach (var path in paths) Console.WriteLine($"- {path}")
-}
+let paths = which("foobar").All
+if paths.Length = 0 then
+  printfn "The 'foobar' command cannot be found."
+else
+  printfn "The 'foobar' command is available at these locations:"
+  for path in paths do printfn $"- {path}"
