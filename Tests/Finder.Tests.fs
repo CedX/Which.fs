@@ -8,7 +8,7 @@ open System.IO
 [<TestClass>]
 type FinderTests() =
 
-  /// The test fixtures.
+  /// The path to the test fixtures.
   let fixtures = Path.Join(AppContext.BaseDirectory, "../Resources")
 
   [<TestMethod>]

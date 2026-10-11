@@ -25,7 +25,7 @@ type Finder() as this =
     let extensionList =
       match Environment.GetEnvironmentVariable "PATHEXT" with
       | null -> defaultExtensions
-      | variable -> match variable.Split(';', splitOptions) with [||] -> defaultExtensions | items -> items |> List.ofArray
+      | variable -> match variable.Split(';', splitOptions) with [||] -> defaultExtensions | items -> List.ofArray items
 
     let pathList =
       match Environment.GetEnvironmentVariable "PATH" with
@@ -55,7 +55,7 @@ type Finder() as this =
     match File.Exists file with
     | true when OperatingSystem.IsWindows() -> this.CheckFileExtension file
     | true -> this.CheckFilePermissions file
-    | _ -> false
+    | false -> false
 
   /// Checks that the specified file is executable according to the executable file extensions.
   member private _.CheckFileExtension (file: string): bool =
