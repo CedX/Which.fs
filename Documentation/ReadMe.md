@@ -80,7 +80,7 @@ ResultSet("foobar", finder).All |> Array.iter (printfn "%s")
 ```
 
 > [!NOTE]
-> The `extensions` property is only meaningful on the Windows platform,
+> The `Extensions` property is only meaningful on the Windows platform,
 > where the executability of a file is determined from its extension.
 
 ### **Paths**: string list
