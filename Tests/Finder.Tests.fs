@@ -26,7 +26,7 @@ type FinderTests() =
     // Assert.AreSequenceEqual(extensions, new Finder().Extensions)
 
     // It should put in lower case the list of file extensions.
-    Finder(Extensions = [".EXE"; ".FSX"; ".PS1"]).Extensions |> shouldBeSequence [".exe"; ".fsx"; ".ps1"]
+    Finder(Extensions = [".EXE"; ".FSX"; ".PS1"]).Extensions |> Should.beSequence [".exe"; ".fsx"; ".ps1"]
 
   [<TestMethod>]
   member _.Find() =
@@ -34,28 +34,28 @@ type FinderTests() =
 
     // It should return the path of the `Executable.cmd` file on Windows.
     let mutable executables = finder.Find "Executable" |> List.ofSeq
-    executables |> shouldHaveCount (if OperatingSystem.IsWindows() then 1 else 0)
-    if OperatingSystem.IsWindows() then executables |> Seq.head |> shouldEndWith @"Resources\Executable.cmd"
+    executables.Length |> Should.be (if OperatingSystem.IsWindows() then 1 else 0)
+    if OperatingSystem.IsWindows() then executables |> Seq.head |> Should.endWith @"Resources\Executable.cmd"
 
     // It should return the path of the `Executable.sh` file on POSIX.
     executables <- finder.Find "Executable.sh" |> List.ofSeq
-    executables |> shouldHaveCount (if OperatingSystem.IsWindows() then 0 else 1)
-    if not (OperatingSystem.IsWindows()) then executables |> Seq.head |> shouldEndWith @"Resources/Executable.sh"
+    executables.Length |> Should.be (if OperatingSystem.IsWindows() then 0 else 1)
+    if not (OperatingSystem.IsWindows()) then executables |> Seq.head |> Should.endWith @"Resources/Executable.sh"
 
     // It should return an empty array if the searched command is not executable or not found.
-    finder.Find "NotExecutable.sh" |> shouldBeEmpty
-    finder.Find "foo" |> shouldBeEmpty
+    finder.Find "NotExecutable.sh" |> Should.beEmpty
+    finder.Find "foo" |> Should.beEmpty
 
   [<TestMethod>]
   member _.IsExecutable() =
     let finder = Finder()
 
     // It should return `false` if the searched command is not executable or not found.
-    finder.IsExecutable "foo/bar/baz.qux" |> shouldBeFalse
-    finder.IsExecutable "Resources/NotExecutable.sh" |> shouldBeFalse
+    finder.IsExecutable "foo/bar/baz.qux" |> Should.beFalse
+    finder.IsExecutable "Resources/NotExecutable.sh" |> Should.beFalse
 
     // It should return `false` for a POSIX executable, when test is run on Windows.
-    Path.Join(fixtures, "Executable.sh") |> finder.IsExecutable |> shouldNotBe (OperatingSystem.IsWindows())
+    Path.Join(fixtures, "Executable.sh") |> finder.IsExecutable |> Should.notBe (OperatingSystem.IsWindows())
 
     // It should return `false` for a Windows executable, when test is run on POSIX.
-    Path.Join(fixtures, "Executable.cmd") |> finder.IsExecutable |> shouldBe (OperatingSystem.IsWindows())
+    Path.Join(fixtures, "Executable.cmd") |> finder.IsExecutable |> Should.be (OperatingSystem.IsWindows())
