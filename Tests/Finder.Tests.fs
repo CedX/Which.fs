@@ -13,17 +13,23 @@ type FinderTests() =
 
   [<TestMethod>]
   member _.Constructor() =
-    // let splitOptions = StringSplitOptions.RemoveEmptyEntries ||| StringSplitOptions.TrimEntries
+    let splitOptions = StringSplitOptions.RemoveEmptyEntries ||| StringSplitOptions.TrimEntries
 
     // It should set the `Paths` property to the value of the `PATH` environment variable by default.
-    // let pathEnv = Environment.GetEnvironmentVariable("PATH") ?? ""
-    // List<string> paths = pathEnv.Length > 0 ? [.. pathEnv.Split(Path.PathSeparator, splitOptions).Distinct()] : []
-    // Assert.AreSequenceEqual(paths, new Finder().Paths)
+    let paths =
+      match Environment.GetEnvironmentVariable "PATH" with
+      | null | "" -> [||]
+      | variable -> variable.Split(Path.PathSeparator, splitOptions) |> Array.distinct
+
+    Finder().Paths |> Should.beSequence paths
 
     // It should set the `Extensions` property to the value of the `PATHEXT` environment variable by default.
-    // let pathExt = Environment.GetEnvironmentVariable("PATHEXT") ?? ""
-    // List<string> extensions = pathExt.Length > 0 ? [.. pathExt.Split('', splitOptions).Select(item => item.ToLowerInvariant()).Distinct()] : [".exe", ".cmd", ".bat", ".com"]
-    // Assert.AreSequenceEqual(extensions, new Finder().Extensions)
+    let extensions =
+      match Environment.GetEnvironmentVariable "PATHEXT" with
+      | null | "" -> [| ".exe"; ".cmd"; ".bat"; ".com" |]
+      | variable -> variable.Split(';', splitOptions) |> Array.map _.ToLowerInvariant() |> Array.distinct
+
+    Finder().Extensions |> Should.beSequence extensions
 
     // It should put in lower case the list of file extensions.
     Finder(Extensions = [".EXE"; ".FSX"; ".PS1"]).Extensions |> Should.beSequence [".exe"; ".fsx"; ".ps1"]
