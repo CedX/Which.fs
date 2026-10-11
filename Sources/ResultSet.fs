@@ -18,7 +18,3 @@ type ResultSet(command: string, finder: Finder) =
   interface IEnumerable with
     /// Returns a new enumerator that allows iterating the results of this set.
     member this.GetEnumerator() = (this :> string seq).GetEnumerator()
-
-/// Contains operations for finding executables in the system path.
-module ResultSet = ()
-  // TODO Which function

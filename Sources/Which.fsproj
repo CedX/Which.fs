@@ -41,5 +41,6 @@
 	<ItemGroup>
 		<Compile Include="Finder.fs" />
 		<Compile Include="ResultSet.fs" />
+		<Compile Include="Which.fs" />
 	</ItemGroup>
 </Project>

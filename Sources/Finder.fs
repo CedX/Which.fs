@@ -25,10 +25,7 @@ type Finder() as this =
     let extensionList =
       match Environment.GetEnvironmentVariable "PATHEXT" with
       | null -> defaultExtensions
-      | variable ->
-        match variable.Split(';', splitOptions) with
-        | [||] -> defaultExtensions
-        | items -> items |> List.ofArray
+      | variable -> match variable.Split(';', splitOptions) with [||] -> defaultExtensions | items -> items |> List.ofArray
 
     let pathList =
       match Environment.GetEnvironmentVariable "PATH" with
@@ -41,12 +38,12 @@ type Finder() as this =
   /// The list of executable file extensions.
   member _.Extensions
     with get() = extensions
-    and set(value: string list) = extensions <- value |> List.map (fun extension -> extension.ToLowerInvariant())
+    and set(value: string list) = extensions <- value |> List.map (fun extension -> extension.ToLowerInvariant()) |> List.distinct
 
   /// The list of system paths.
   member _.Paths
     with get() = paths
-    and set(value: string list) = paths <- value |> List.map (fun path -> quotePattern.Replace(path, ""))
+    and set(value: string list) = paths <- value |> List.map (fun path -> quotePattern.Replace(path, "")) |> List.distinct
 
   /// Finds the instances of an executable in the system path.
   /// Returns the paths of executables found.
