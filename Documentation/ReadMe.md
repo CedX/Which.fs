@@ -12,18 +12,18 @@ dotnet package add Belin.Which.FSharp
 For detailed instructions, see the [installation guide](Installation.md).
 
 ## Usage
-This package provides the `Finder.Which(string command)` method, allowing to locate a command in the system path.  
-This method takes the name of the command to locate, and returns a `ResultSet` instance.
+This package provides the `which (command: string)` function, allowing to locate a command in the system path.  
+This function takes the name of the command to locate, and returns a `ResultSet` instance.
 
 The `ResultSet` class implements the `string seq` interface.  
-It is therefore possible to iterate over the results using a `foreach` loop:
+It is therefore possible to iterate over the results using a `for...in` loop:
 
 ```fsharp
 open Belin.Which
 
 // Finds all instances of an executable and returns them one at a time.
-Console.WriteLine("The 'foobar' command is available at these locations:")
-foreach (var path in Which("foo")) Console.WriteLine($"- {path}")
+printfn "The 'foobar' command is available at these locations:"
+for path in which "foo" do printfn $"- {path}"
 ```
 
 The `ResultSet` class also provides two convenient properties:
@@ -31,19 +31,18 @@ The `ResultSet` class also provides two convenient properties:
 - `All` : get all instances of the searched command.
 - `First` : get the first instance of the searched command.
 
-### **All**: string list
+### **All**: string array
 The `ResultSet.All` property returns an array of the absolute paths of all instances of an executable found in the system path.
 If the executable could not be located, it returns an empty array.
 
 ```fsharp
 open Belin.Which
 
-var paths = Which("foobar").All
-if (paths.Length == 0) Console.Error.WriteLine("The 'foobar' command cannot be found.")
-else {
-  Console.WriteLine("The 'foobar' command is available at these locations:")
-  foreach (var path in paths) Console.WriteLine($"- {path}")
-}
+match which("foobar").All with
+| [||] -> eprintfn "The 'foobar' command cannot be found."
+| paths ->
+  printfn "The 'foobar' command is available at these locations:"
+  for path in paths do printfn $"- {path}"
 ```
 
 ### **First**: string option
@@ -53,30 +52,39 @@ If the executable could not be located, it returns a `None` value.
 ```fsharp
 open Belin.Which
 
-var path = Which("foobar").First
-if (path is null) Console.Error.WriteLine("The 'foobar' command cannot be found.")
-else Console.WriteLine($"The 'foobar' command is located at: {path}")
+match which("foobar").First with
+| None -> eprintfn "The 'foobar' command cannot be found."
+| Some path -> printfn $"The 'foobar' command is located at: {path}"
 ```
 
 ## Options
-The behavior of the `Finder.Which(string command, string list? paths = null, string list? extensions = null)` method can be customized using the following parameters.
+The `which()` function is defined as:
 
-### string list **extensions**
-An enumerable of strings specifying the list of executable file extensions.
+```fsharp
+let which (command: string) = ResultSet(command, Finder())
+```
+
+You can configure the search behavior by using a customized `Finder` instance.  
+The `Finder` class has the following properties.
+
+### **Extensions**: string list
+A list of strings specifying the executable file extensions.
 On Windows, defaults to the list of extensions provided by the `PATHEXT` environment variable.
 
 ```fsharp
-Which("foobar", extensions: [".foo", ".exe", ".cmd"])
+let finder = Finder(Extensions = [".foo"; ".exe"; ".cmd"])
+ResultSet("foobar", finder).All |> Array.iter (printfn "%s")
 ```
 
 > [!NOTE]
-> The `extensions` option is only meaningful on the Windows platform,
+> The `extensions` property is only meaningful on the Windows platform,
 > where the executability of a file is determined from its extension.
 
-### string list **paths**
-An enumerable of strings specifying the system paths from which the given command will be searched.
+### **Paths**: string list
+A list of strings specifying the system paths from which the given command will be searched.
 Defaults to the list of directories provided by the `PATH` environment variable.
 
 ```fsharp
-Which("foobar", paths: ["/usr/local/bin", "/usr/bin"])
+let finder = Finder(Paths = ["/usr/local/bin", "/usr/bin"])
+ResultSet("foobar", finder).All |> Array.iter (printfn "%s")
 ```

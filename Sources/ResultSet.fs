@@ -6,7 +6,7 @@ open System.Collections
 type ResultSet(command: string, finder: Finder) =
 
   /// All instances of the searched command.
-  member this.All: string list = this |> Seq.distinct |> Seq.toList
+  member this.All: string array = this |> Seq.distinct |> Seq.toArray
 
   /// The first instance of the searched command. Returns `None` if not found.
   member this.First: string option = Seq.tryHead this
