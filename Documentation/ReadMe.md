@@ -40,10 +40,10 @@ open Belin.Which
 
 match which("foobar").All with
 | [||] ->
-    eprintfn "The 'foobar' command cannot be found."
+  eprintfn "The 'foobar' command cannot be found."
 | paths ->
-    printfn "The 'foobar' command is available at these locations:"
-    for path in paths do printfn $"- {path}"
+  printfn "The 'foobar' command is available at these locations:"
+  for path in paths do printfn $"- {path}"
 ```
 
 ### **First**: string option
@@ -55,9 +55,9 @@ open Belin.Which
 
 match which("foobar").First with
 | None ->
-    eprintfn "The 'foobar' command cannot be found."
+  eprintfn "The 'foobar' command cannot be found."
 | Some path ->
-    printfn $"The 'foobar' command is located at: {path}"
+  printfn $"The 'foobar' command is located at: {path}"
 ```
 
 ## Options
