@@ -7,7 +7,7 @@ open System.Runtime.Versioning
 open System.Text.RegularExpressions
 
 /// Finds the instances of an executable in the system path.
-type Finder() as this =
+type Finder() =
   let mutable extensions: string list = []
   let mutable paths: string list = []
 
@@ -58,7 +58,7 @@ type Finder() as this =
     | false -> false
 
   /// Checks that the specified file is executable according to the executable file extensions.
-  member private _.CheckFileExtension(file: string): bool =
+  member private this.CheckFileExtension(file: string): bool =
     let extension = file |> Path.GetExtension |> defaultIfNull ""
     this.Extensions |> List.contains (extension.ToLowerInvariant())
 
