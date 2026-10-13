@@ -5,4 +5,5 @@ namespace Belin.Which
 module Which =
 
   /// Finds the instances of the specified command in the system path.
+  [<CompiledName("Which")>]
   let which (command: string) = ResultSet(command, Finder())
