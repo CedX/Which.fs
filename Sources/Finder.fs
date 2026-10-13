@@ -47,24 +47,24 @@ type Finder() as this =
 
   /// Finds the instances of an executable in the system path.
   /// Returns the paths of executables found.
-  member this.Find (command: string): string seq =
+  member this.Find(command: string): string seq =
     seq { for directory in this.Paths do yield! this.FindExecutables directory command }
 
   /// Gets a value indicating whether the specified file is executable.
-  member this.IsExecutable (file: string): bool =
+  member this.IsExecutable(file: string): bool =
     match File.Exists file with
     | true when OperatingSystem.IsWindows() -> this.CheckFileExtension file
     | true -> this.CheckFilePermissions file
     | false -> false
 
   /// Checks that the specified file is executable according to the executable file extensions.
-  member private _.CheckFileExtension (file: string): bool =
+  member private _.CheckFileExtension(file: string): bool =
     let extension = file |> Path.GetExtension |> defaultIfNull ""
     this.Extensions |> List.contains (extension.ToLowerInvariant())
 
   /// Checks that the specified file is executable according to its permissions.
   [<UnsupportedOSPlatform("windows")>]
-  member private _.CheckFilePermissions (file: string): bool =
+  member private _.CheckFilePermissions(file: string): bool =
     let _, stat = Syscall.stat file
     match stat.st_mode with
     | mode when mode.HasFlag FilePermissions.S_IXOTH -> true
