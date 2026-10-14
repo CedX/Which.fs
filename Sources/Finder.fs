@@ -1,15 +1,18 @@
 namespace Belin.Which
 
-open Mono.Unix.Native
 open System
 open System.IO
-open System.Runtime.Versioning
+open System.Runtime.InteropServices
 open System.Text.RegularExpressions
 
 /// Finds the instances of an executable in the system path.
 type Finder() =
   let mutable extensions: string list = []
   let mutable paths: string list = []
+
+  /// Tests the accessibility of a file.
+  [<DllImport("libc", EntryPoint = "access", CharSet = CharSet.Ansi)>]
+  static extern int TestFileAccess(string path, int mode)
 
   /// The list of default executable file extensions.
   static let defaultExtensions = [".exe"; ".cmd"; ".bat"; ".com"]
@@ -53,25 +56,11 @@ type Finder() =
   /// Gets a value indicating whether the specified file is executable.
   member this.IsExecutable(file: string): bool =
     match File.Exists file with
-    | true when OperatingSystem.IsWindows() -> this.CheckFileExtension file
-    | true -> this.CheckFilePermissions file
+    | true when OperatingSystem.IsWindows() ->
+      let extension = file |> Path.GetExtension |> defaultIfNull ""
+      this.Extensions |> List.contains (extension.ToLowerInvariant())
+    | true -> TestFileAccess(file, 1 (* X_OK *)) = 0
     | false -> false
-
-  /// Checks that the specified file is executable according to the executable file extensions.
-  member private this.CheckFileExtension(file: string): bool =
-    let extension = file |> Path.GetExtension |> defaultIfNull ""
-    this.Extensions |> List.contains (extension.ToLowerInvariant())
-
-  /// Checks that the specified file is executable according to its permissions.
-  [<UnsupportedOSPlatform("windows")>]
-  member private _.CheckFilePermissions(file: string): bool =
-    let _, stat = Syscall.stat file
-    match stat.st_mode with
-    | mode when mode.HasFlag FilePermissions.S_IXOTH -> true
-    | mode when mode.HasFlag FilePermissions.S_IXGRP -> stat.st_gid = Syscall.getgid()
-    | mode when mode.HasFlag FilePermissions.S_IXUSR -> stat.st_uid = Syscall.getuid()
-    | mode when mode.HasFlag FilePermissions.S_IXGRP || mode.HasFlag FilePermissions.S_IXUSR -> Syscall.getuid() = 0u
-    | _ -> false
 
   /// Finds the instances of the specified command in a given directory.
   /// Returns the paths of executables found.
