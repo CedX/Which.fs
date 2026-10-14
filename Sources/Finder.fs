@@ -12,7 +12,7 @@ type Finder() =
 
   /// Tests the accessibility of a file.
   [<DllImport("libc", EntryPoint = "access", CharSet = CharSet.Ansi)>]
-  static extern int TestFileAccess(string path, int mode)
+  static extern int testFileAccess(string path, int mode)
 
   /// The list of default executable file extensions.
   static let defaultExtensions = [".exe"; ".cmd"; ".bat"; ".com"]
@@ -57,7 +57,7 @@ type Finder() =
   member this.IsExecutable(file: string): bool =
     match File.Exists file with
     | true when OperatingSystem.IsWindows() -> Path.GetExtension file |> defaultIfNull "" |> _.ToLowerInvariant() |> List.contains <| this.Extensions
-    | true -> TestFileAccess(file, 1 (* X_OK *)) = 0
+    | true -> testFileAccess(file, 1 (* X_OK *)) = 0
     | false -> false
 
   /// Finds the instances of the specified command in a given directory.
