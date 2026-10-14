@@ -56,9 +56,7 @@ type Finder() =
   /// Gets a value indicating whether the specified file is executable.
   member this.IsExecutable(file: string): bool =
     match File.Exists file with
-    | true when OperatingSystem.IsWindows() ->
-      let extension = file |> Path.GetExtension |> defaultIfNull ""
-      this.Extensions |> List.contains (extension.ToLowerInvariant())
+    | true when OperatingSystem.IsWindows() -> Path.GetExtension file |> defaultIfNull "" |> _.ToLowerInvariant() |> List.contains <| this.Extensions
     | true -> TestFileAccess(file, 1 (* X_OK *)) = 0
     | false -> false
 
