@@ -51,7 +51,7 @@ type Finder() =
   /// Finds the instances of an executable in the system path.
   /// Returns the paths of executables found.
   member this.Find(command: string): string seq =
-    seq { for directory in this.Paths do yield! this.FindExecutables directory command }
+    seq { for directory in this.Paths do yield! this.FindExecutables(directory, command) }
 
   /// Gets a value indicating whether the specified file is executable.
   member this.IsExecutable(file: string): bool =
@@ -62,7 +62,7 @@ type Finder() =
 
   /// Finds the instances of the specified command in a given directory.
   /// Returns the paths of executables found.
-  member private this.FindExecutables (directory: string) (command: string): string seq =
+  member private this.FindExecutables(directory: string, command: string): string seq =
     seq { "" }
     |> Seq.append (if OperatingSystem.IsWindows() then this.Extensions else [])
     |> Seq.map (fun extension -> Path.Join(directory, $"{command}{extension}") |> Path.GetFullPath)
