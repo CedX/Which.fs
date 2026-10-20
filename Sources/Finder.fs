@@ -35,13 +35,13 @@ type Finder() =
       | null -> []
       | variable -> variable.Split(Path.PathSeparator, splitOptions) |> List.ofArray
 
-    extensions <- extensionList |> List.map (fun extension -> extension.ToLowerInvariant()) |> List.distinct
+    extensions <- extensionList |> List.map _.ToLowerInvariant() |> List.distinct
     paths <- pathList |> List.map (fun path -> quotePattern.Replace(path, "")) |> List.distinct
 
   /// The list of executable file extensions.
   member _.Extensions
     with get() = extensions
-    and set(value: string list) = extensions <- value |> List.map (fun extension -> extension.ToLowerInvariant()) |> List.distinct
+    and set(value: string list) = extensions <- value |> List.map _.ToLowerInvariant() |> List.distinct
 
   /// The list of system paths.
   member _.Paths
