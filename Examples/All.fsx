@@ -1,4 +1,4 @@
-#r "nuget: Belin.Which.FSharp, 1.0.0-rc.1"
+#r "nuget: Belin.Which.FSharp"
 open Belin.Which
 
 // Finds all instances of an executable.
