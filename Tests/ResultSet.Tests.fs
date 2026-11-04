@@ -52,7 +52,7 @@ type ResultSetTests() =
     which("NotExecutable.sh").First |> Should.be None
     which("foo").First |> Should.be None
 
-  // [<TestMethod>]
+  [<TestMethod>]
   member _.GetEnumerator() =
     // It should return the path of the `Executable.cmd` file on Windows.
     let mutable found = false
