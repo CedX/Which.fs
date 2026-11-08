@@ -1,5 +1,6 @@
 namespace Belin.Which
 
+open Belin.Should
 open Microsoft.VisualStudio.TestTools.UnitTesting
 open System
 open System.IO
