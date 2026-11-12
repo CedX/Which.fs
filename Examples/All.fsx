@@ -6,5 +6,5 @@ match which("foobar").All with
 | [||] ->
   eprintfn "The 'foobar' command cannot be found."
 | paths ->
-  printfn "The 'foobar' command is available at these locations:"
-  for path in paths do printfn $"- {path}"
+  printn "The 'foobar' command is available at these locations:"
+  for path in paths do printn $"- {path}"

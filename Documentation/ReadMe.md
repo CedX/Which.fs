@@ -22,8 +22,8 @@ It is therefore possible to iterate over the results using a `for...in` loop:
 open Belin.Which
 
 // Finds all instances of an executable and returns them one at a time.
-printfn "The 'foobar' command is available at these locations:"
-for path in which "foo" do printfn $"- {path}"
+printn "The 'foobar' command is available at these locations:"
+for path in which "foo" do printn $"- {path}"
 ```
 
 The `ResultSet` class also provides two convenient properties:
@@ -42,8 +42,8 @@ match which("foobar").All with
 | [||] ->
   eprintfn "The 'foobar' command cannot be found."
 | paths ->
-  printfn "The 'foobar' command is available at these locations:"
-  for path in paths do printfn $"- {path}"
+  printn "The 'foobar' command is available at these locations:"
+  for path in paths do printn $"- {path}"
 ```
 
 ### **First**: string option
@@ -57,7 +57,7 @@ match which("foobar").First with
 | None ->
   eprintfn "The 'foobar' command cannot be found."
 | Some path ->
-  printfn $"The 'foobar' command is located at: {path}"
+  printn $"The 'foobar' command is located at: {path}"
 ```
 
 ## Options
@@ -76,7 +76,7 @@ On Windows, defaults to the list of extensions provided by the `PATHEXT` environ
 
 ```fsharp
 let finder = Finder(Extensions = [".foo"; ".exe"; ".cmd"])
-ResultSet("foobar", finder).All |> Array.iter (printfn "%s")
+ResultSet("foobar", finder).All |> Array.iter printn
 ```
 
 > [!NOTE]
@@ -89,5 +89,5 @@ Defaults to the list of directories provided by the `PATH` environment variable.
 
 ```fsharp
 let finder = Finder(Paths = ["/usr/local/bin", "/usr/bin"])
-ResultSet("foobar", finder).All |> Array.iter (printfn "%s")
+ResultSet("foobar", finder).All |> Array.iter printn
 ```
